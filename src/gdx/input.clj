@@ -6,3 +6,13 @@
 
 (defn key-pressed? [^Input input k]
   (.isKeyPressed input k))
+
+(defn key-just-pressed? [^Input input k]
+  (.isKeyJustPressed input input-key))
+
+(defn mouse-position [^Input input]
+  [(.getX input)
+   (.getY input)])
+
+(defn button-just-pressed? [^Input input button]
+  (.isButtonJustPressed input input-button))
