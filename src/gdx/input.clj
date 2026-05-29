@@ -8,7 +8,7 @@
   (.isKeyPressed input k))
 
 (defn key-just-pressed? [^Input input k]
-  (.isKeyJustPressed input input-key))
+  (.isKeyJustPressed input k))
 
 (defn mouse-position [^Input input]
   [(.getX input)

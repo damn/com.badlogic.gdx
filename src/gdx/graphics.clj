@@ -1,9 +1,9 @@
 (ns gdx.graphics
-  (:import (com.badlogic.gdx GL20
-                             Graphics
-                             Pixmap
-                             Pixmap$Format
-                             Texture)))
+  (:import (com.badlogic.gdx Graphics)
+           (com.badlogic.gdx.graphics GL20
+                                      Pixmap
+                                      Pixmap$Format
+                                      Texture)))
 
 (defn delta-time [^Graphics graphics]
   (.getDeltaTime graphics))
