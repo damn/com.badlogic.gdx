@@ -15,4 +15,4 @@
    (.getY input)])
 
 (defn button-just-pressed? [^Input input button]
-  (.isButtonJustPressed input input-button))
+  (.isButtonJustPressed input button))
