@@ -1,4 +1,4 @@
-(ns gdx.utils.screen-utils
+(ns com.badlogic.gdx.utils.screen-utils
   (:import (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn clear! [r g b a]

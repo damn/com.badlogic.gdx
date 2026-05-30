@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
             [gdx.scenes.scene2d.touchable :as touchable]
-            [gdx.utils.align :as align]
+            [com.badlogic.gdx.utils.align :as align]
             [gdx.scenes.scene2d.listener :as listener])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
