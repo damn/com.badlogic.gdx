@@ -17,7 +17,7 @@
   (.setColor pixmap r g b a))
 
 (defn draw-pixel! [^Pixmap pixmap x y]
-  (.drawPixel x y))
+  (.drawPixel pixmap x y))
 
 (defn texture [^Pixmap pixmap]
   (Texture. pixmap))
