@@ -1,4 +1,7 @@
 
+```
+lein run -m app-test
+```
 
 2D ( no graphics 2d folder )
 Desktop games ( no 'backend ' )
