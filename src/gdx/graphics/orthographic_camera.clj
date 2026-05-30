@@ -1,28 +1,22 @@
 (ns gdx.graphics.orthographic-camera
-  (:require [gdx.math.vector3 :as vector3])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)))
+  (:require [com.badlogic.gdx.graphics.orthographic-camera :as orthographic-camera]
+            [com.badlogic.gdx.math.vector3 :as vector3]))
 
 (defn create
   [{:keys [y-down?
            world-width
            world-height]}]
-  (doto (OrthographicCamera.)
-    (.setToOrtho y-down? world-width world-height)))
+  (doto (orthographic-camera/create)
+    (orthographic-camera/set-to-ortho! y-down? world-width world-height)))
 
-(defn viewport-width [^OrthographicCamera camera]
-  (.viewportWidth camera))
+(defn combined [camera]
+  (orthographic-camera/combined camera))
 
-(defn viewport-height [^OrthographicCamera camera]
-  (.viewportHeight camera))
+(defn zoom [camera]
+  (orthographic-camera/zoom camera))
 
-(defn combined [^OrthographicCamera camera]
-  (.combined camera))
-
-(defn zoom [^OrthographicCamera camera]
-  (.zoom camera))
-
-(defn frustum [^OrthographicCamera camera]
-  (let [plane-points (mapv vector3/->clj (.planePoints (.frustum camera)))
+(defn frustum [camera]
+  (let [plane-points (mapv vector3/->clj (.planePoints (orthographic-camera/frustum camera)))
         frustum-points (take 4 plane-points)
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
@@ -30,17 +24,17 @@
         top-y    (apply max (map second frustum-points))]
     [left-x right-x bottom-y top-y]))
 
-(defn position [^OrthographicCamera camera]
-  (vector3/->clj (.position camera)))
+(defn position [camera]
+  (vector3/->clj (orthographic-camera/position camera)))
 
-(defn set-position! [^OrthographicCamera camera [x y]]
-  (set! (.x (.position camera)) x)
-  (set! (.y (.position camera)) y)
-  (.update camera))
+(defn set-position! [camera [x y]]
+  (set! (.x (orthographic-camera/position camera)) x)
+  (set! (.y (orthographic-camera/position camera)) y)
+  (orthographic-camera/update! camera))
 
-(defn set-zoom! [^OrthographicCamera camera amount]
-  (set! (.zoom camera) amount)
-  (.update camera))
+(defn set-zoom! [camera amount]
+  (orthographic-camera/set-zoom! camera amount)
+  (orthographic-camera/update! camera))
 
 (defn inc-zoom! [cam by]
   (set-zoom! cam (max 0.1 (+ (zoom cam) by))))
@@ -54,8 +48,8 @@
 (defn calculate-zoom
   "calculates the zoom value for camera to see all the 4 points."
   [camera {:keys [left top right bottom]}]
-  (let [viewport-width  (viewport-width  camera)
-        viewport-height (viewport-height camera)
+  (let [viewport-width  (orthographic-camera/viewport-width  camera)
+        viewport-height (orthographic-camera/viewport-height camera)
         [px py] (position camera)
         px (float px)
         py (float py)
