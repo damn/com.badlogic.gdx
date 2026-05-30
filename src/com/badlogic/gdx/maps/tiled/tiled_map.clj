@@ -1,6 +1,9 @@
 (ns com.badlogic.gdx.maps.tiled.tiled-map
   (:import (com.badlogic.gdx.maps.tiled TiledMap)))
 
+(defn create []
+  (TiledMap.))
+
 (defn props [^TiledMap tiled-map]
   (.getProperties tiled-map))
 

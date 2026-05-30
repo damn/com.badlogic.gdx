@@ -3,3 +3,6 @@
 
 (defn set-visible! [^TiledMapTileLayer layer bool]
   (.setVisible layer bool))
+
+(defn create [width height tilewidth tileheight]
+  (TiledMapTileLayer. width height tilewidth tileheight))
