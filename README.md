@@ -1,3 +1,8 @@
+
+Minimal API for each class of [com.badlogicgames.gdx/gdx "1.14.0"]
+
+~~~
+
 Facade / Abstraction / Clojure API for `com.badlogic.gdx`
 Each class one namespace with same name
 So we can rewrite it later
