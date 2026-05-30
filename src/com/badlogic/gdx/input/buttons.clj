@@ -1,4 +1,4 @@
-(ns gdx.input.buttons
+(ns com.badlogic.gdx.input.buttons
   (:import (com.badlogic.gdx Input$Buttons)))
 
 (def left  Input$Buttons/LEFT)

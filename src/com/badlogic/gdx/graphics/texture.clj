@@ -1,4 +1,4 @@
-(ns gdx.graphics.texture
+(ns com.badlogic.gdx.graphics.texture
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 

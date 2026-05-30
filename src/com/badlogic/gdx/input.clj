@@ -1,4 +1,4 @@
-(ns gdx.input
+(ns com.badlogic.gdx.input
   (:import (com.badlogic.gdx Input)))
 
 (defn set-processor! [^Input input processor]
@@ -10,9 +10,11 @@
 (defn key-just-pressed? [^Input input k]
   (.isKeyJustPressed input k))
 
-(defn mouse-position [^Input input]
-  [(.getX input)
-   (.getY input)])
+(defn x [^Input input]
+  (.getX input))
+
+(defn y [^Input input]
+  (.getY input))
 
 (defn button-just-pressed? [^Input input button]
   (.isButtonJustPressed input button))

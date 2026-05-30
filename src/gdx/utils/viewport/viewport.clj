@@ -1,5 +1,5 @@
 (ns gdx.utils.viewport.viewport
-  (:require [gdx.math.vector2 :as vector2])
+  (:require [com.badlogic.gdx.math.vector2 :as vector2])
   (:import (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn update! [^Viewport viewport screen-width screen-height center-camera?]

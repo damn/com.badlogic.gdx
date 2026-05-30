@@ -1,4 +1,4 @@
-(ns gdx.maps.layers
+(ns com.badlogic.gdx.maps.map-layers
   (:refer-clojure :exclude [get])
   (:import (com.badlogic.gdx.maps MapLayers)))
 
