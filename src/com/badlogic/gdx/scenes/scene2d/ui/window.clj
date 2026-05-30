@@ -15,4 +15,4 @@
   (.getTitleTable window))
 
 (defn title-label [^Window window]
-  (.getTitleLabel p))
+  (.getTitleLabel window))
