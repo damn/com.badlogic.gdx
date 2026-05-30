@@ -1,6 +1,6 @@
 (ns gdx.application-listener
-  (:require [gdx.gdx :as gdx])
-  (:import (com.badlogic.gdx ApplicationListener)))
+  (:require [com.badlogic.gdx.application-listener :as application-listener]
+            [com.badlogic.gdx.gdx :as gdx]))
 
 (defn create
   [{:keys [create!
@@ -8,22 +8,8 @@
            render!
            resize!
            pause!
-           resume!]}]
-  (reify ApplicationListener
-    (create [_]
-      (create! (gdx/app)))
-
-    (dispose [_]
-      (dispose!))
-
-    (render [_]
-      (render!))
-
-    (resize [_ width height]
-      (resize! width height))
-
-    (pause [_]
-      (pause!))
-
-    (resume [_]
-      (resume!))))
+           resume!]
+    :as listener}]
+  (assoc listener :create!
+         (fn []
+           (create! (gdx/app))))) ; this is not simple, stateful decision move more up in the code !
