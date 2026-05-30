@@ -10,6 +10,7 @@
            pause!
            resume!]
     :as listener}]
-  (assoc listener :create!
-         (fn []
-           (create! (gdx/app))))) ; this is not simple, stateful decision move more up in the code !
+  (application-listener/create
+   (assoc listener :create!
+          (fn []
+            (create! (gdx/app)))))) ; this is not simple, stateful decision move more up in the code !
