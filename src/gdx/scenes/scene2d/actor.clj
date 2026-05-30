@@ -1,10 +1,31 @@
 (ns gdx.scenes.scene2d.actor
   (:refer-clojure :exclude [name])
   (:require [com.badlogic.gdx.math.vector2 :as vector2]
-            [gdx.scenes.scene2d.touchable :as touchable]
-            [com.badlogic.gdx.utils.align :as align]
-            [gdx.scenes.scene2d.listener :as listener])
+            [com.badlogic.gdx.scenes.scene2d.touchable :as touchable]
+            [com.badlogic.gdx.scenes.scene2d.ui.text-tooltip :as text-tooltip]
+            [com.badlogic.gdx.scenes.scene2d.utils.change-listener :as change-listener]
+            [com.badlogic.gdx.scenes.scene2d.utils.click-listener :as click-listener]
+            [com.badlogic.gdx.utils.align :as align])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+
+(defmulti create-listener
+  (fn [[listener-k listener-params]]
+    listener-k))
+
+(defmethod create-listener
+  :listener/text-tooltip
+  [[_ [tooltip skin]]]
+  (text-tooltip/create tooltip skin))
+
+(defmethod create-listener
+  :listener/change
+  [[_ f]]
+  (change-listener/create f))
+
+(defmethod create-listener
+  :listener/click
+  [[_ f]]
+  (click-listener/create f))
 
 (defn name [^Actor actor]
   (.getName actor))
@@ -58,7 +79,7 @@
   (.setTouchable actor (touchable/k->value touchable)))
 
 (defn add-listener! [^Actor actor [listener-k listener-params]]
-  (.addListener actor (listener/create [listener-k listener-params])))
+  (.addListener actor (create-listener [listener-k listener-params])))
 
 (defn stage->local-coordinates [^Actor actor xy]
   (vector2/->clj (.stageToLocalCoordinates actor (vector2/->java xy))))

@@ -5,7 +5,6 @@
                  [org.clojure/clojure "1.12.0"]
                  ]
   :source-paths ["src"]
-  :java-source-paths ["java-src"]
   :resource-paths ["resources/"]
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
