@@ -1,12 +1,10 @@
-(ns gdx.scenes.scene2d.ui.label
-  (:require [gdx.scenes.scene2d.actor :as actor])
+(ns com.badlogic.gdx.scenes.scene2d.ui.label
   (:import (com.badlogic.gdx.scenes.scene2d.ui Label
                                                Skin)))
 
 (defn create
-  [{:keys [text skin] :as opts}]
-  (doto (Label. ^String text ^Skin skin)
-    (actor/set-opts! opts)))
+  [{:keys [text skin]}]
+  (Label. ^String text ^Skin skin))
 
 (defn set-text! [^Label label text]
   (.setText label ^String text))
