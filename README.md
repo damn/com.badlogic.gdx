@@ -15,3 +15,6 @@ RULES:
 * no cross dependencies, only imports
 * no reflection warnings
 * no exit type hints
+
+~ PLAIN FACADE ~
+
