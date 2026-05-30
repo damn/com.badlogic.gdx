@@ -2,6 +2,9 @@
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
+(defn create [file-handle]
+  (Texture. file-handle))
+
 (defn region
   ([^Texture texture]
    (TextureRegion. texture))

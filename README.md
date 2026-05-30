@@ -23,3 +23,5 @@ RULES:
 
 ~ PLAIN FACADE ~
 
+
+ALso: gives shorter names sometimes .... possible !
