@@ -1,5 +1,5 @@
 (ns gdx.scenes.scene2d.utils.texture-region-drawable
-  (:require [gdx.graphics.color :as color])
+  (:require [com.badlogic.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils TextureRegionDrawable)))
 

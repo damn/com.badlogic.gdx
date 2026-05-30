@@ -1,9 +1,7 @@
 (ns gdx.graphics
+  (:require [com.badlogic.gdx.graphics.pixmap :as pixmap])
   (:import (com.badlogic.gdx Graphics)
-           (com.badlogic.gdx.graphics GL20
-                                      Pixmap
-                                      Pixmap$Format
-                                      Texture)))
+           (com.badlogic.gdx.graphics GL20)))
 
 (defn delta-time [^Graphics graphics]
   (.getDeltaTime graphics))
@@ -23,9 +21,9 @@
   (.newCursor graphics pixmap hotspot-x hotspot-y))
 
 (defn white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor 1 1 1 1)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
+  (let [pixmap (doto (pixmap/create 1 1)
+                 (pixmap/set-color! 1 1 1 1)
+                 (pixmap/draw-pixel! 0 0))
+        texture (pixmap/texture pixmap)]
+    (pixmap/dispose! pixmap)
     texture))
