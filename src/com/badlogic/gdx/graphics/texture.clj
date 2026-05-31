@@ -1,8 +1,9 @@
 (ns com.badlogic.gdx.graphics.texture
-  (:import (com.badlogic.gdx.graphics Texture)
+  (:import (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(defn create [file-handle]
+(defn create [^FileHandle file-handle]
   (Texture. file-handle))
 
 (defn region
