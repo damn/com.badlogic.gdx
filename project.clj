@@ -4,6 +4,7 @@
                  [com.badlogicgames.gdx/gdx "1.14.0"]
                  [org.clojure/clojure "1.12.0"]
                  ]
+  :java-source-paths ["java-src"]
   :source-paths ["src"]
   :resource-paths ["resources/"]
   :plugins [[lein-hiera "2.0.0"]
