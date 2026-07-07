@@ -1,13 +1,23 @@
 (ns com.badlogic.gdx.math.vector3
+  (:refer-clojure :exclude [new])
   (:import (com.badlogic.gdx.math Vector3)))
 
-(defn ->clj [^Vector3 v3]
-  [(.x v3)
-   (.y v3)
-   (.z v3)])
+(defn x [^Vector3 v]
+  (.x v))
 
-(defn set-x! [^Vector3 v3 x]
-  (set! (.x v3) x))
+(defn y [^Vector3 v]
+  (.y v))
 
-(defn set-y! [^Vector3 v3 y]
-  (set! (.y v3) y))
+(defn z [^Vector3 v]
+  (.z v))
+
+(defn set-x! [vector3 x]
+  (set! (.x ^Vector3 vector3) x))
+
+(defn set-y! [vector3 y]
+  (set! (.y ^Vector3 vector3) y))
+
+(defn clojurize [v3]
+  [(x v3)
+   (y v3)
+   (z v3)])

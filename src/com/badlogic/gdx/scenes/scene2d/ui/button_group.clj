@@ -1,17 +1,21 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.button-group
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Button
-                                               ButtonGroup)))
+  (:refer-clojure :exclude [new remove])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
-(defn create [{:keys [max-check-count
-                      min-check-count]}]
-  (doto (ButtonGroup.)
-    (.setMaxCheckCount max-check-count)
-    (.setMinCheckCount min-check-count)))
+(defn add! [^ButtonGroup button-group ^Button button]
+  (ButtonGroup/.add button-group button))
 
-(def checked ButtonGroup/.getChecked)
+(defn get-checked [^ButtonGroup button-group]
+  (ButtonGroup/.getChecked button-group))
 
-(defn add! [button-group button]
-  (ButtonGroup/.add button-group ^Button button))
+(defn new []
+  (ButtonGroup.))
 
-(defn remove! [button-group button]
-  (ButtonGroup/.remove button-group ^Button button))
+(defn remove! [^ButtonGroup button-group ^Button button]
+  (ButtonGroup/.remove button-group button))
+
+(defn set-max-check-count! [^ButtonGroup button-group n]
+  (ButtonGroup/.setMaxCheckCount button-group (int n)))
+
+(defn set-min-check-count! [^ButtonGroup button-group n]
+  (ButtonGroup/.setMinCheckCount button-group (int n)))

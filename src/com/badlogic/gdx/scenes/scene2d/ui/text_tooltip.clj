@@ -1,6 +1,6 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.text-tooltip
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Skin
-                                               TextTooltip)))
+  (:refer-clojure :exclude [new])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Skin TextTooltip)))
 
-(defn create [tooltip skin]
-  (TextTooltip. ^String tooltip ^Skin skin))
+(defn new [^String tooltip ^Skin skin]
+  (TextTooltip. tooltip skin))

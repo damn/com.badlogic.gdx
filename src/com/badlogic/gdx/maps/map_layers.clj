@@ -1,10 +1,9 @@
 (ns com.badlogic.gdx.maps.map-layers
-  (:refer-clojure :exclude [get])
-  (:import (com.badlogic.gdx.maps MapLayer
-                                  MapLayers)))
+  (:refer-clojure :exclude [get add])
+  (:import (com.badlogic.gdx.maps MapLayers)))
 
-(defn get [^MapLayers layers ^String layer-name]
-  (.get layers layer-name))
+(defn add! [^MapLayers map-layers layer]
+  (.add map-layers layer))
 
-(defn add! [^MapLayers layers ^MapLayer layer]
-  (.add layers layer))
+(defn get [map-layers layer-name]
+  (MapLayers/.get map-layers ^String layer-name))

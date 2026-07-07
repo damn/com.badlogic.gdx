@@ -1,23 +1,17 @@
 (ns com.badlogic.gdx.graphics.pixmap
+  (:refer-clojure :exclude [new])
   (:import (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
-                                      Pixmap$Format
-                                      Texture)))
+                                      Pixmap$Format)))
 
-(defn create
+(defn new
   ([^FileHandle file-handle]
    (Pixmap. file-handle))
-  ([width height]
-   (Pixmap. (int width) (int height) Pixmap$Format/RGBA8888)))
-
-(defn dispose! [^Pixmap pixmap]
-  (.dispose pixmap))
+  ([width height ^Pixmap$Format format]
+   (Pixmap. (int width) (int height) format)))
 
 (defn set-color! [^Pixmap pixmap r g b a]
-  (.setColor pixmap r g b a))
+  (Pixmap/.setColor pixmap r g b a))
 
 (defn draw-pixel! [^Pixmap pixmap x y]
-  (.drawPixel pixmap x y))
-
-(defn texture [^Pixmap pixmap]
-  (Texture. pixmap))
+  (Pixmap/.drawPixel pixmap (int x) (int y)))

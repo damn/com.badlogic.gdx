@@ -1,22 +1,47 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.cell
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
-; TODO order is important, reduce?
-(defn set-opts! [^Cell cell opts]
-  (doseq [[option arg] opts]
-    (case option
-      :fill-x?    (.fillX     cell)
-      :fill-y?    (.fillY     cell)
-      :expand?    (.expand    cell)
-      :expand-x?  (.expandX   cell)
-      :expand-y?  (.expandY   cell)
-      :bottom?    (.bottom    cell)
-      :colspan    (.colspan   cell (int arg))
-      :pad        (.pad       cell (float arg))
-      :pad-top    (.padTop    cell (float arg))
-      :pad-bottom (.padBottom cell (float arg))
-      :width      (.width     cell (float arg))
-      :height     (.height    cell (float arg))
-      :center?    (.center    cell)
-      :right?     (.right     cell)
-      :left?      (.left      cell))))
+(defn bottom! [^Cell cell]
+  (.bottom cell))
+
+(defn center! [^Cell cell]
+  (.center cell))
+
+(defn colspan! [^Cell cell n]
+  (.colspan cell (int n)))
+
+(defn expand! [^Cell cell]
+  (.expand cell))
+
+(defn expand-x! [^Cell cell]
+  (.expandX cell))
+
+(defn expand-y! [^Cell cell]
+  (.expandY cell))
+
+(defn fill-x! [^Cell cell]
+  (.fillX cell))
+
+(defn fill-y! [^Cell cell]
+  (.fillY cell))
+
+(defn height! [^Cell cell n]
+  (.height cell (float n)))
+
+(defn left! [^Cell cell]
+  (.left cell))
+
+(defn pad! [^Cell cell n]
+  (.pad cell (float n)))
+
+(defn pad-bottom! [^Cell cell n]
+  (.padBottom cell (float n)))
+
+(defn pad-top! [^Cell cell n]
+  (.padTop cell (float n)))
+
+(defn right! [^Cell cell]
+  (.right cell))
+
+(defn width! [^Cell cell n]
+  (.width cell (float n)))

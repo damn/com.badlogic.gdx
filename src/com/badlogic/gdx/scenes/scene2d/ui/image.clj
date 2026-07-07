@@ -1,19 +1,18 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.image
+  (:refer-clojure :exclude [new])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.ui Image)
-           (com.badlogic.gdx.scenes.scene2d.utils TextureRegionDrawable)))
+           (com.badlogic.gdx.scenes.scene2d.utils Drawable)))
 
-(defmulti create class)
+(defn new [^TextureRegion texture-region]
+  (Image. texture-region))
 
-(defmethod create Texture [texture]
-  (Image. ^Texture texture))
+(defn new-drawable [^Drawable drawable]
+  (Image. drawable))
 
-(defmethod create TextureRegion [texture-region]
-  (Image. ^TextureRegion texture-region))
+(defn new-texture [^Texture texture]
+  (Image. texture))
 
-(defmethod create TextureRegionDrawable [drawable]
-  (Image. ^TextureRegionDrawable drawable))
-
-(defn set-drawable! [^Image image drawable]
-  (.setDrawable image drawable))
+(defn set-drawable! [^Image image ^Drawable drawable]
+  (Image/.setDrawable image drawable))

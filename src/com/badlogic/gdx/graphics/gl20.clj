@@ -3,8 +3,8 @@
 
 (def color-buffer-bit GL20/GL_COLOR_BUFFER_BIT)
 
-(defn clear-color! [^GL20 gl r g b a]
-  (.glClearColor gl r g b a))
+(defn clear! [gl bit-mask]
+  (GL20/.glClear gl bit-mask))
 
-(defn clear! [^GL20 gl bit-mask]
-  (.glClear gl bit-mask))
+(defn clear-color! [gl r g b a]
+  (GL20/.glClearColor gl r g b a))

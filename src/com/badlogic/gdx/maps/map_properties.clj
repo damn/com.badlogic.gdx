@@ -2,12 +2,18 @@
   (:refer-clojure :exclude [get])
   (:import (com.badlogic.gdx.maps MapProperties)))
 
-(defn get [^MapProperties props k]
-  (.get props k))
+(defn get [map-properties k]
+  (MapProperties/.get map-properties k))
 
-(defn put! [^MapProperties props k v]
-  (.put props k v))
+(defn get-keys [^MapProperties props]
+  (.getKeys props))
 
-(defn ->clj [^MapProperties props]
-  (zipmap (.getKeys props)
-          (.getValues props)))
+(defn get-values [^MapProperties props]
+  (.getValues props))
+
+(defn put! [map-properties k v]
+  (MapProperties/.put map-properties k v))
+
+(defn clojurize [props]
+  (zipmap (get-keys props)
+          (get-values props)))

@@ -1,18 +1,17 @@
 (ns com.badlogic.gdx.scenes.scene2d.ui.window
-  (:refer-clojure :exclude [class])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Skin
-                                               Window)))
+  (:refer-clojure :exclude [new class])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Skin Window)))
 
 (def class Window)
 
-(defn create [title skin]
-  (Window. ^String title ^Skin skin))
+(defn get-title-label [^Window window]
+  (Window/.getTitleLabel window))
 
-(defn set-modal! [^Window window]
-  (.setModal window true))
+(defn get-title-table [^Window window]
+  (Window/.getTitleTable window))
 
-(defn title-table [^Window window]
-  (.getTitleTable window))
+(defn new [^String title ^Skin skin]
+  (Window. title skin))
 
-(defn title-label [^Window window]
-  (.getTitleLabel window))
+(defn set-modal! [^Window window modal?]
+  (Window/.setModal window modal?))

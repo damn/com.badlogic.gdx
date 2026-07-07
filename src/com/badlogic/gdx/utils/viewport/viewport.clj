@@ -1,9 +1,9 @@
 (ns com.badlogic.gdx.utils.viewport.viewport
-  (:import (com.badlogic.gdx.utils.viewport Viewport)
-           (com.badlogic.gdx.math Vector2)))
+  (:import (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
-(defn update! [^Viewport viewport screen-width screen-height center-camera?]
-  (.update viewport screen-width screen-height center-camera?))
+(defn update! [viewport width height center-camera?]
+  (Viewport/.update viewport width height center-camera?))
 
-(defn unproject [^Viewport viewport ^Vector2 vector2]
-  (.unproject viewport vector2))
+(defn unproject [viewport vector2]
+  (Viewport/.unproject viewport ^Vector2 vector2))
