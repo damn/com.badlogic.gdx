@@ -2,4 +2,4 @@
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defn play [sound]
-  (Sound/.play sound))
+  (.play ^Sound sound))

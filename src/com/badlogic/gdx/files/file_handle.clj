@@ -2,14 +2,14 @@
   (:refer-clojure :exclude [list])
   (:import (com.badlogic.gdx.files FileHandle)))
 
-(defn is-directory [^FileHandle file-handle]
-  (.isDirectory file-handle))
+(defn isDirectory [file-handle]
+  (.isDirectory ^FileHandle file-handle))
 
-(defn extension [^FileHandle file-handle]
-  (.extension file-handle))
+(defn extension [file-handle]
+  (.extension ^FileHandle file-handle))
 
-(defn list [^FileHandle file-handle]
-  (.list file-handle))
+(defn list [file-handle]
+  (.list ^FileHandle file-handle))
 
-(defn path [^FileHandle file-handle]
-  (.path file-handle))
+(defn path [file-handle]
+  (.path ^FileHandle file-handle))

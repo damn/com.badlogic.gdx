@@ -24,32 +24,44 @@
 (def V4 Batch/V4)
 
 (defn begin [batch]
-  (Batch/.begin batch))
+  (.begin ^Batch batch))
 
 (defn end [batch]
-  (Batch/.end batch))
+  (.end ^Batch batch))
 
-(defn set-color [batch r g b a]
-  (Batch/.setColor batch (float r) (float g) (float b) (float a)))
+(defn setColor [batch r g b a]
+  (.setColor ^Batch batch
+             (float r)
+             (float g)
+             (float b)
+             (float a)))
 
-(defn get-color [batch]
-  (Batch/.getColor batch))
+(defn getColor [batch]
+  (.getColor ^Batch batch))
 
-(defn set-projection-matrix [batch matrix4]
-  (Batch/.setProjectionMatrix batch matrix4))
+(defn setProjectionMatrix [batch matrix4]
+  (.setProjectionMatrix ^Batch batch
+                        matrix4))
 
 (defn draw
-  ([batch ^Texture texture ^floats verts offset cnt]
-   (Batch/.draw batch
-                texture
-                verts
-                (int offset)
-                (int cnt)))
-  ([batch ^TextureRegion texture-region x y w h]
-   (Batch/.draw batch texture-region (float x) (float y) (float w) (float h)))
-  ([batch ^TextureRegion texture-region x y origin-x origin-y w h scale-x scale-y rotation]
-   (Batch/.draw batch
-                texture-region
+  ([batch texture verts offset cnt]
+   (.draw ^Batch batch
+          ^Texture texture
+          ^floats verts
+          (int offset)
+          (int cnt)))
+
+  ([batch texture-region x y w h]
+   (.draw ^Batch batch
+          ^TextureRegion texture-region
+          (float x)
+          (float y)
+          (float w)
+          (float h)))
+
+  ([batch texture-region x y origin-x origin-y w h scale-x scale-y rotation]
+   (Batch/.draw ^Batch batch
+                ^TextureRegion texture-region
                 (float x)
                 (float y)
                 (float origin-x)
