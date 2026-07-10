@@ -2,8 +2,11 @@
 
 ## Project rules (facade conventions)
 
-- [ ] Codify README rules as a Cursor rule (`.cursor/rules/libgdx-facade.mdc`)
+- [ ] Codify README style guide as a Cursor rule (`.cursor/rules/libgdx-facade.mdc`)
   - One namespace per Java class (exact class path, even if long)
+  - Mechanical 1-1 Java name mapping — camelCase methods, no `!`/`?` renaming
+  - Constructors as `new`; constants mirror Java static fields
+  - No docstrings in facades — libGDX JavaDoc is the documentation
   - No cross-dependencies between facade namespaces — only `:import`
   - No reflection warnings (`*warn-on-reflection* true` in `project.clj`)
   - No return-type hints on `defn` (param hints like `^Actor` are fine)
@@ -23,9 +26,9 @@
 
 - [ ] Add new facade namespaces on demand as the consumer game needs more libGDX classes
 - [ ] Keep inner-class naming convention: `$` in filename (`input$keys.clj`, `pixmap$format.clj`)
-- [ ] Keep Java interop style: `Class/.method` (e.g. `(Table/.add table actor)`)
+- [ ] Keep Java interop style: `.method` or `Class/.method` inside facades
 - [ ] Use `(:refer-clojure :exclude [...])` when shadowing Clojure builtins (`class`, `new`, etc.)
-- [ ] Optional sugar is allowed where it already exists: keyword lookup on proxies, `reify` for listeners, `proxy` for actors
+- [ ] Optional boundary sugar only: `reify`/`proxy` for listeners, map-of-fns for `ApplicationListener`, `into-array` inside helpers
 
 ## Integration
 

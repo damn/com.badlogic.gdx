@@ -16,7 +16,7 @@ The "don't wrap" advice ignores how Clojure itself is built. Most of `clojure.co
 (defn nth [coll i] (.nth RT coll i))
 ```
 
-Nobody tells you to call `RT/conj` directly in application code. The standard library establishes a **Clojure-shaped seam** over the JVM. This library does the same for libGDX: `table/add!` over `(.add table actor)`.
+Nobody tells you to call `RT/conj` directly in application code. The standard library establishes a **Clojure-shaped seam** over the JVM. This library does the same for libGDX: `table/add` over `(.add table actor)`.
 
 ---
 
@@ -34,14 +34,14 @@ your dependencies are **Java objects and their methods**. To swap an implementat
 When game code calls a facade function:
 
 ```clojure
-(table/add! table actor)
-(stage/draw! stage)
+(table/add table actor)
+(stage/draw stage)
 ```
 
 your dependency is a **Clojure var**. You can `with-redef` it in tests or experiments without touching call sites, and replace one namespace with pure Clojure later without rewriting game code.
 
 ```clojure
-(with-redefs [stage/draw! (fn [_] nil)]
+(with-redefs [stage/draw (fn [_] nil)]
   (run-game-loop-once))
 ```
 
@@ -49,116 +49,56 @@ You cannot `with-redef` a Java method. You can redef a function.
 
 ---
 
-## Clojure naming conventions
+## 1-1 Java name mapping
 
-### `!` = mutation / side effect
-
-Java `setX` / `add` / `draw` become obvious mutators:
+Facades use **mechanical 1-1 mapping** from libGDX. Method and constant names stay as close to Java as possible — no Clojure renaming.
 
 ```clojure
 ;; com.badlogic.gdx.scenes.scene2d.ui.table
-(table/add! table actor)
-(table/row! table)
+(table/add table actor)
+(table/row table)
 
 ;; com.badlogic.gdx.scenes.scene2d.stage
-(stage/act! stage)
-(stage/draw! stage)
-```
-
-Plain interop: `(.draw stage)` — is it pure? With the facade: `stage/draw!` — clearly not.
-
-### `?` = boolean predicates
-
-Java `isVisible`, `isKeyPressed`, `overlaps` → Clojure predicates:
-
-```clojure
-;; com.badlogic.gdx.scenes.scene2d.actor
-(actor/visible? actor)
+(stage/act stage)
+(stage/draw stage)
 
 ;; com.badlogic.gdx.input
-(input/key-pressed? input code)
-(input/key-just-pressed? input code)
+(input/isKeyPressed input code)
+(input/isKeyJustPressed input code)
 
-;; com.badlogic.gdx.math.rectangle
-(rectangle/overlaps? a b)
-(rectangle/contains? rect [x y])
+;; com.badlogic.gdx.scenes.scene2d.actor
+(actor/isVisible actor)
+(actor/setVisible actor true)
 ```
 
-Game code reads naturally: `(when (input/key-pressed? input code) ...)`.
+Why not `add!`, `draw!`, `visible?`, `key-pressed?`? Those read nicely in Clojure, but they add a translation layer between your code and libGDX docs, stack traces, and Java examples. With 1-1 mapping, `table.add` in JavaDoc is `table/add` in Clojure — no mental lookup table.
+
+| Java | Facade |
+|------|--------|
+| `setVisible(boolean)` | `setVisible` |
+| `isKeyPressed(int)` | `isKeyPressed` |
+| `Input$Keys.SPACE` | `input$keys/SPACE` |
+| `Batch.X1` | `batch/X1` |
+| `new Table()` | `table/new` |
+
+Constructors are `new`. Overloaded constructors keep Java names (`image/newDrawable`, `image/newTexture`). Multi-arity `defn` only where Java has overloads.
+
+For behavior and semantics, read [libGDX JavaDoc](https://libgdx.com/dev/api/) — not Clojure docstrings. Facades intentionally carry none; see [Why no docstrings?](README.md#why-no-docstrings) in the README.
 
 ---
 
-## Keywords instead of Java constants
-
-Magic ints become namespaced keywords — searchable, greppable, no static import:
+## Constants as plain `def`s
 
 ```clojure
-;; com.badlogic.gdx.input$keys
-(input$keys/key-to-value :input.keys/space)  ; => Input$Keys/SPACE
-(input$keys/key-to-value :input.keys/escape)
-
-;; com.badlogic.gdx.input$buttons
-(input$buttons/key-to-value :input.buttons/left)
+batch/X1              ; vertex attribute index
+batch/Y1
+input$keys/SPACE
+input$keys/ESCAPE
+texture$texture-filter/linear
+pixmap$format/rgba8888
 ```
 
-Viewport objects can act like maps via keyword lookup:
-
-```clojure
-;; com.badlogic.gdx.utils.viewport.fit-viewport
-(:viewport/camera viewport)
-(:viewport/world-width viewport)
-(:viewport/world-height viewport)
-```
-
-Instead of `(.getCamera viewport)` everywhere.
-
----
-
-## Maps and vectors at the boundary
-
-### Constructor maps
-
-```clojure
-;; com.badlogic.gdx.application-listener
-(app-listener/new
-  {:create!  #(init-game)
-   :render!  #(render-frame)
-   :dispose! #(cleanup)
-   :resize!  (fn [w h] ...)
-   :pause!   #(pause)
-   :resume!  #(resume)})
-
-;; com.badlogic.gdx.math.circle
-(circle/new {:position [x y] :radius 10})
-```
-
-No anonymous Java class boilerplate. Pass a map of functions.
-
-### Vector args and destructuring
-
-```clojure
-;; com.badlogic.gdx.graphics.color
-(color/new [r g b a])
-
-;; com.badlogic.gdx.math.vector2
-(vector2/new [x y])
-
-;; com.badlogic.gdx.math.rectangle
-(rectangle/contains? rect [x y])
-```
-
-### Java collections → Clojure data
-
-```clojure
-;; com.badlogic.gdx.maps.map-properties
-(map-properties/clojurize props)  ; => plain Clojure map
-
-;; com.badlogic.gdx.math.vector2
-(vector2/clojurize v2)  ; => [x y]
-
-;; com.badlogic.gdx.math.vector3
-(vector3/clojurize v3)  ; => [x y z]
-```
+Same names as Java static fields. Refer by namespace — no static import syntax in game code.
 
 ---
 
@@ -166,7 +106,7 @@ No anonymous Java class boilerplate. Pass a map of functions.
 
 ```clojure
 ;; com.badlogic.gdx.scenes.scene2d.ui.select-box
-(select-box/set-items! box ["Option A" "Option B" "Option C"])
+(select-box/setItems box ["Option A" "Option B" "Option C"])
 ```
 
 Plain interop every time:
@@ -185,15 +125,15 @@ Java libGDX is picky about primitives. The facade absorbs that:
 
 ```clojure
 ;; com.badlogic.gdx.graphics.g2d.batch
-(batch/draw-texture-region! batch region x y w h)
+(batch/draw batch region x y w h)
 ;; (float x) (float y) etc. handled inside
 
 ;; com.badlogic.gdx.scenes.scene2d.ui.cell
-(cell/height! cell 100)
-(cell/pad! cell 5)
+(cell/height cell 100)
+(cell/pad cell 5)
 
 ;; com.badlogic.gdx.scenes.scene2d.ui.button-group
-(button-group/set-max-check-count! group 1)
+(button-group/setMaxCheckCount group 1)
 ```
 
 Game code passes normal numbers; no `(float x)` at every call site.
@@ -204,12 +144,12 @@ Game code passes normal numbers; no `(float x)` at every call site.
 
 ```clojure
 ;; com.badlogic.gdx.scenes.scene2d.utils.click-listener
-(click-listener/new
+(click-listener/create
   (fn [event x y]
     (handle-click x y)))
 
 ;; com.badlogic.gdx.scenes.scene2d.utils.change-listener
-(change-listener/new
+(change-listener/create
   (fn [event actor]
     (on-change actor)))
 
@@ -225,23 +165,23 @@ Pass a function; the `proxy` / `reify` noise stays in the facade.
 
 ## Disambiguating Java overloads and fluent builders
 
-Java overloads become separate Clojure functions:
+Java overloads become separate Clojure functions or multi-arity `defn`:
 
 ```clojure
 ;; com.badlogic.gdx.scenes.scene2d.ui.image
 (image/new texture-region)
-(image/new-drawable drawable)
-(image/new-texture texture)
+(image/newDrawable drawable)
+(image/newTexture texture)
 ```
 
 Java fluent builders become plain functions (easier to compose):
 
 ```clojure
 ;; com.badlogic.gdx.scenes.scene2d.ui.cell
-(-> (table/add! t widget)
-    (cell/width! 100)
-    (cell/pad! 5)
-    (cell/center!))
+(-> (table/add t widget)
+    (cell/width 100)
+    (cell/pad 5)
+    (cell/center))
 ```
 
 ---
@@ -252,37 +192,11 @@ Facade namespaces exclude Clojure builtins so game code can use familiar names:
 
 ```clojure
 (table/new)                        ; not shadowed by clojure.core/new
-(table/add! t actor)               ; not shadowed by clojure.core/add
-(map-properties/get props "key")   ; not shadowed by clojure.core/get
-(rectangle/contains? rect [x y])   ; not shadowed by clojure.core/contains?
-(button-group/remove! group btn)   ; not shadowed by clojure.core/remove
+(table/add t actor)                ; not shadowed by clojure.core/add
+(map-properties/get props "key")     ; not shadowed by clojure.core/get
+(rectangle/contains rect x y)        ; not shadowed by clojure.core/contains?
+(button-group/remove group btn)      ; not shadowed by clojure.core/remove
 ```
-
----
-
-## Constants as plain `def`s
-
-```clojure
-batch/x1              ; vertex attribute index
-batch/y1
-align/center          ; alignment constant
-touchable/disabled    ; touchable mode
-texture$texture-filter/linear
-pixmap$format/rgba8888
-```
-
-Refer by namespace — no Java static field syntax in game code.
-
----
-
-## Type references without Java imports
-
-```clojure
-;; com.badlogic.gdx.scenes.scene2d.ui.window
-window/class   ; => Window class, for type hints or instance?
-```
-
-Game code can reference types without importing Java classes directly.
 
 ---
 
@@ -292,10 +206,10 @@ Game code can reference types without importing Java classes directly.
 
 ```clojure
 ;; facade (one place)
-(defn add! [^Table table ^Actor actor] ...)
+(defn add [^Table table ^Actor actor] ...)
 
 ;; game code (no hints needed)
-(table/add! t actor)
+(table/add t actor)
 ```
 
 ---
@@ -308,8 +222,8 @@ Game code can reference types without importing Java classes directly.
 (texture-region/new texture x y w h)
 
 ;; com.badlogic.gdx.scenes.scene2d.actor
-(actor/set-position! actor x y)
-(actor/set-position! actor x y align)
+(actor/setPosition actor x y)
+(actor/setPosition actor x y align)
 ```
 
 ---
@@ -329,16 +243,13 @@ It is a **seam**: game code → Clojure functions → Java libGDX today → pure
 | Advantage | Example |
 |-----------|---------|
 | Same pattern as `clojure.core` | thin fns over `RT` / Java internals |
-| `with-redef` / testability | `(with-redefs [stage/draw! ...])` |
-| `!` / `?` naming | `draw!`, `visible?`, `key-pressed?` |
-| Keywords | `:input.keys/space`, `:viewport/camera` |
-| Maps at boundary | `application-listener/new`, `circle/new` |
-| Vectors | `color/new`, `vector2/new`, `contains?` with `[x y]` |
-| `into-array` hidden | `select-box/set-items!` |
+| `with-redef` / testability | `(with-redefs [stage/draw ...])` |
+| 1-1 Java name mapping | `table/add`, `isKeyPressed`, `input$keys/SPACE` |
+| libGDX JavaDoc as docs | no duplicated docstrings in facades |
+| `into-array` hidden | `select-box/setItems` |
 | `float`/`int` casting | `batch`, `cell`, `button-group` |
 | Callbacks as fns | `click-listener`, `actor/new` |
-| Builder → fns | `cell/width!`, `cell/pad!` |
+| Builder → fns | `cell/width`, `cell/pad` |
 | `clojure.core` clashes | `:exclude [new add get ...]` |
-| Constants as `def` | `batch/x1`, `align/center` |
-| Java → Clojure data | `map-properties/clojurize`, `vector2/clojurize` |
+| Constants as `def` | `batch/X1`, `input$keys/SPACE` |
 | Reflection hints | centralized in facade namespaces |

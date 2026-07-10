@@ -7,9 +7,11 @@ depends on these namespaces instead of calling libGDX Java classes directly.
 
 **Why wrap instead of plain interop?** See [WHY_WRAP.md](WHY_WRAP.md).
 
+**Stability guarantee?** See [stable.md](stable.md).
+
 ## What this is
 
-- A plain interop layer: `(Table/.add table actor)`, not a game framework
+- A plain interop layer: `(table/add table actor)`, not a game framework
 - Reflection-clean (`*warn-on-reflection* true`, verified with `lein check`)
 - Incrementally grown: ~72 classes facaded so far, more added as needed
 
@@ -33,8 +35,8 @@ depends on these namespaces instead of calling libGDX Java classes directly.
             [com.badlogic.gdx.gdx :as gdx]))
 
 (def ui (table/new))
-(table/add! ui label)
-(table/row! ui)
+(table/add ui label)
+(table/row ui)
 
 (gdx/graphics)  ; => Gdx graphics singleton
 ```
@@ -79,14 +81,57 @@ Two conventions fit that:
 
 Either works across libGDX, VisUI, ShapeDrawer, LWJGL, and anything else — pick one and apply it everywhere. We may standardize on the `clojure.` prefix across wrapper repos later; for now this library keeps the mirror for the shorter paths already in use.
 
+### Style guide
+
+Facade namespaces use **mechanical 1-1 mapping** from Java. Names stay as close to libGDX as possible — no Clojure renaming of methods or constants.
+
+| Java | Clojure facade |
+|------|----------------|
+| `table.add(actor)` | `(table/add table actor)` |
+| `batch.setColor(r, g, b, a)` | `(batch/setColor batch r g b a)` |
+| `input.isKeyPressed(code)` | `(input/isKeyPressed input code)` |
+| `Input$Keys.SPACE` | `input$keys/SPACE` |
+| `Batch.X1` | `batch/X1` |
+| `new Table()` | `(table/new)` |
+
+**Method names** — keep Java camelCase (`setVisible`, `isVisible`, `getColor`, `addActor`). Do not add `!` or `?` suffixes.
+
+**Constructors** — `new`. Overloaded constructors keep Java names (`newDrawable`, `newTexture`).
+
+**Constants** — mirror Java static field names (`SPACE`, `X1`, `linear`).
+
+**Each `defn` wraps one Java method.** Multi-arity only where Java has overloads.
+
+**No docstrings** — see [Why no docstrings?](#why-no-docstrings) below.
+
+**Interop** — `.method` or `Class/.method` inside the facade. Type hints on params (`^Actor`), not return types. Cast primitives (`float`, `int`) inside the facade, not at call sites.
+
+**`:refer-clojure :exclude`** when a facade name shadows `clojure.core` (`new`, `add`, `get`, `contains?`, …).
+
+**Boundary sugar** (sparingly) — `reify`/`proxy` for listeners, map-of-fns for `ApplicationListener`, `into-array` hidden inside helpers like `setItems`.
+
 ### Conventions
 
 - One namespace per Java class (exact package path)
 - Facade namespaces only `:import` Java — no `:require` between facade ns
-- Mutators suffixed with `!` (`set-visible!`, `draw!`)
-- Java calls use qualified form: `Class/.method`
-- No return-type hints on `defn` (param hints like `^Actor` are fine)
+- Follow the style guide above for all new facades
 - No reflection warnings
+
+### Why no docstrings?
+
+Facade namespaces do **not** carry docstrings. libGDX JavaDoc is the documentation.
+
+With 1-1 name mapping, there is nothing to explain at the Clojure layer: `table/add` is `Table.add()`, `batch/setColor` is `Batch.setColor()`. The facade is a one-line mechanical wrapper — copying JavaDoc into Clojure would duplicate noise, create a second source of truth that drifts, and work against the [stability](#stability) promise (rewriting docs is still churn).
+
+For behavior, semantics, and examples, use the [libGDX API reference](https://libgdx.com/dev/api/). README and [WHY_WRAP.md](WHY_WRAP.md) cover wrapper philosophy only.
+
+### Stability
+
+See [stable.md](stable.md) for the full policy. In short:
+
+- **Accretion-only** — add new namespaces and vars; never rename or remove existing ones
+- **No bug fixes** — incorrect mirroring stays; add a new var if you need different behavior
+- **Pin a git sha** — what you depend on today is what you get tomorrow
 
 ## Adding as a dependency
 
@@ -117,8 +162,10 @@ lein check    # verify all namespaces compile, no reflection warnings
 
 ## Contributing
 
-Missing a libGDX class? Add a facade namespace following the conventions above,
+Missing a libGDX class? Add a facade namespace following the [style guide](#style-guide) above,
 run `lein check`, open a PR. See [TODO.md](TODO.md) for planned work.
+
+New vars only — do not rename or change existing public functions ([stable.md](stable.md)).
 
 ## License
 
