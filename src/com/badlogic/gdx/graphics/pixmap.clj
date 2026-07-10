@@ -14,3 +14,6 @@
 
 (defn drawPixel [pixmap x y]
   (.drawPixel ^Pixmap pixmap (int x) (int y)))
+
+(defn getFormat [^Pixmap pixmap]
+  (Pixmap/.getFormat pixmap))
