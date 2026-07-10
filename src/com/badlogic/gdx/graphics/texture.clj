@@ -4,15 +4,8 @@
            (com.badlogic.gdx.graphics Pixmap
                                       Texture)))
 
-(defprotocol New
-  (new [source]))
-
-(extend-type FileHandle
-  New
-  (new [file-handle]
-    (Texture. file-handle)))
-
-(extend-type Pixmap
-  New
-  (new [pixmap]
-    (Texture. pixmap)))
+(defn new
+  [source]
+  (if (instance? FileHandle source)
+    (Texture. ^FileHandle source)
+    (Texture. ^Pixmap source)))
